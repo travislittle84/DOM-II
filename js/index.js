@@ -2,14 +2,14 @@
 
 /*
     **mouseover
-    keydown
+    **keydown
     *wheel
     **drag / drop
     **load
     **focus
     *resize
     *scroll
-    *select
+    **select
     **dblclick
 
     * = implemented listener and action
@@ -64,6 +64,8 @@ textAreaElement.style.width = '60%';
 textAreaElement.style.height = '100px';
 textAreaElement.style.display = 'block';
 textAreaElement.style.margin = 'auto';
+textAreaElement.style.padding = '8px';
+textAreaElement.style.fontSize = '3rem';
 textAreaElement.value = 'Select some text in this box!';
 let selectIntro = document.querySelector('.intro');
 selectIntro.appendChild(textAreaElement);
@@ -72,6 +74,10 @@ selectIntro.appendChild(textAreaElement);
 function textSelectionAction (event) { 
     const selection = event.target.value.substring(event.target.selectionStart, event.target.selectionEnd);
     console.log(`you selected: ${selection}`);
+    let selectH2Tags = document.querySelectorAll('h2');
+    selectH2Tags.forEach((tag) => {
+        tag.textContent = selection;
+    });
 }
 
 let selectTextarea = document.querySelector('textarea');
@@ -125,6 +131,22 @@ document.addEventListener('dragover', (event) => {
 document.addEventListener('drop', (event) => {
     event.preventDefault();
     if (dragItem != undefined) dragItem.remove();    
+});
+
+// keydown - remove the letters typed into the textarea from the p tags of the website
+function removeLetter(keyToRemove, str) {
+    let reg = new RegExp(keyToRemove);
+    return str.replace(reg,'');
+    // console.log(`${event.key}`);
+}
+
+let pTags = document.querySelectorAll('p');
+
+selectTextarea.addEventListener('keydown', (event) => {
+    for (let i = 0; i < pTags.length; i++) {
+        let replacement = removeLetter(event.key,pTags[i].textContent);
+        pTags[i].textContent = replacement;
+    }
 });
 
 
