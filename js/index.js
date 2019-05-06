@@ -7,8 +7,8 @@
     **drag / drop
     **load
     **focus
-    *resize
-    *scroll
+    **resize
+    **scroll
     **select
     **dblclick
 
@@ -16,15 +16,23 @@
     ** = finished with task
 */
 
-let navTag = document.querySelector('nav');
-
 // Task 2 - Prevent page refresh on click of nav elements
+let navTag = document.querySelector('nav');
 navTag.addEventListener('click', (event) => {
     if (event.target.tagName == 'A'){
         event.preventDefault();
     }
 });
 /********************* Task 2 End   ***************/
+
+/*********** Query and Element Selectors **********/
+
+let selectIntro = document.querySelector('.intro');
+let imgElements = document.querySelectorAll('img');
+let pTags = document.querySelectorAll('p');
+let bodySelector = document.querySelector('body');
+
+let lastScrollPosY = 0;
 
 navTag.addEventListener('mouseover', (event) => {
     if (event.target.tagName == 'A'){
@@ -53,6 +61,7 @@ navTag.addEventListener('dblclick', (event) => {
 
 // load - annoying alert
 let windowLoad = window.addEventListener('load', (event) => {
+    lastScrollPosY = window.scrollY;
     alert('Insert autoplaying video here');
 });
 
@@ -66,8 +75,8 @@ textAreaElement.style.display = 'block';
 textAreaElement.style.margin = 'auto';
 textAreaElement.style.padding = '8px';
 textAreaElement.style.fontSize = '3rem';
-textAreaElement.value = 'Select some text in this box!';
-let selectIntro = document.querySelector('.intro');
+textAreaElement.value = 'Type some text in here! ;)';
+
 selectIntro.appendChild(textAreaElement);
 
 // Text selection
@@ -89,26 +98,42 @@ selectTextarea.addEventListener('focus', (event) => {
 });
 
 // resize 
+let resizing = false;
 window.addEventListener('resize', (event) => {
-    console.log('resizing');
+    resizing = true;
+    bodySelector.style.backgroundColor = 'green';
 });
 
-
 // scolling
-let windowScroll = window.addEventListener('scroll', (event) => {
-    console.log(`scroll: scrolling!`);
+
+let prevYpos = window.scrollY;
+window.addEventListener('scroll', (event) => {
+
+    newYpos = window.scrollY;
+
+    if(prevYpos - newYpos < 0){ // Scrolling up
+        pTags.forEach((tag) => {
+            tag.style.color = 'dodgerblue';
+        })
+    } else{     // Scrolling down
+        pTags.forEach((tag) => {
+            tag.style.color = 'unset'
+        })
+    }
+    prevYpos = newYpos;
 });
 
 let windowWheel = window.addEventListener('wheel', (event) => {
-    console.log(`wheel: scrolling!`);
-    event.stopPropagation;
+    bodySelector.style.backgroundColor = 'slategrey';
+        event.stopPropagation;
+    
 });
 
 // Drag and drop
 let dragItem;
 
 // make only images draggable
-let imgElements = document.querySelectorAll('img');
+
 imgElements.forEach((img) => {
     img.setAttribute('draggable', true);
 });
@@ -140,13 +165,13 @@ function removeLetter(keyToRemove, str) {
     // console.log(`${event.key}`);
 }
 
-let pTags = document.querySelectorAll('p');
-
 selectTextarea.addEventListener('keydown', (event) => {
     for (let i = 0; i < pTags.length; i++) {
         let replacement = removeLetter(event.key,pTags[i].textContent);
         pTags[i].textContent = replacement;
     }
 });
+
+
 
 
